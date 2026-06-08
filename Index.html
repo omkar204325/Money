@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Video</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding-top: 40px;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* Main Video Box */
+        .main-box {
+            background: #111;
+            border: 2px solid #333;
+            border-radius: 8px;
+            aspect-ratio: 16/9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .play-btn-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            border: none;
+            padding: 14px 35px;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn-overlay:hover {
+            background: #218838;
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            color: #000;
+            width: 90%;
+            max-width: 300px;
+        }
+
+        .ai-msg {
+            font-size: 0.95rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #d32f2f;
+        }
+
+        .qr-img {
+            width: 180px;
+            height: 180px;
+            background: #eee;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-img img {
+            max-width: 100%;
+        }
+
+        .file-input {
+            margin: 15px 0;
+            width: 100%;
+        }
+
+        .verify-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+
+        .verify-btn:hover {
+            background: #218838;
+        }
+
+        .close-btn {
+            margin-top: 12px;
+            color: #666;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="main-box" id="videoBox">
+            <!-- Thumbnail Image -->
+            <img src="room1.jpg" alt="Video Thumbnail" class="thumbnail">
+            <!-- Play Button Overlay -->
+            <button class="play-btn-overlay" onclick="openQR()">₹5 Pay & Watch 🔥</button>
+        </div>
+    </div>
+
+    <!-- QR Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <div class="ai-msg">
+                हमारा AI payment Screenshot verify करेगा,<br>
+                tabhi video milega!
+            </div>
+            
+            <div class="qr-img">
+                <img src="upi1.jpg" alt="QR">
+            </div>
+
+            <input type="file" class="file-input" id="ss" accept="image/*">
+            
+            <button class="verify-btn" onclick="verify()">Upload Screenshot</button>
+            
+            <div class="close-btn" onclick="closeModal()">Cancel</div>
+        </div>
+    </div>
+
+    <script>
+        function openQR() {
+            document.getElementById('qrModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('qrModal').style.display = 'none';
+        }
+
+        function verify() {
+            if (!document.getElementById('ss').files[0]) {
+                alert('Screenshot upload karein!');
+                return;
+            }
+
+            // Show loading with background
+            document.getElementById('videoBox').innerHTML = 
+                '<div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; width:100%; background:rgba(0,0,0,0.85); color:#888; font-size:1rem;">' +
+                '<div style="border:4px solid #444; border-top:4px solid #888; border-radius:50%; width:40px; height:40px; animation:spin 1s linear infinite; margin-bottom:15px;"></div>' +
+                'Verifying Payment...' +
+                '</div>' +
+                '<style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>';
+            
+            closeModal();
+
+            // After 5 seconds, show device error
+            setTimeout(() => {
+                document.getElementById('videoBox').innerHTML = 
+                    '<div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; width:100%; background:#0a0a0a; color:#999; font-size:0.9rem; padding:20px; text-align:center;">' +
+                    '<div style="font-size:2rem; margin-bottom:10px;">⚠️</div>' +
+                    '<div style="font-weight:bold; margin-bottom:8px; color:#777;">Device Not Supported</div>' +
+                    '<div style="color:#555;">This content is not supported on your current device.</div>' +
+                    '<div style="color:#555; margin-top:5px;">Please check from a different device</div>' +
+                    '</div>';
+            }, 5000);
+        }
+    </script>
+
+</body>
+</html>
